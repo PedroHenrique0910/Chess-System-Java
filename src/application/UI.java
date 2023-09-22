@@ -3,6 +3,7 @@ package application;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
@@ -37,9 +38,13 @@ public class UI {
 	} 
 
 	
-	public static ChessPosition readChessPosition(Scanner sc) {
+	public static ChessPosition readChessPosition(Scanner sc) {	
+		
+		// Lê uma posição de xadrez no formato de entrada do usuário (por exemplo, "a1" a "h8"). 
+		// Retorna a posição como um objeto ChessPosition ou lança uma exceção em caso de formato incorreto.	
+		
 		try {
-		String s = sc.nextLine();
+		String s = sc.nextLine();                                                  
 		char column = s.charAt(0);
 		int row = Integer.parseInt(s.substring(1));
 		return new ChessPosition(column, row);
@@ -50,8 +55,19 @@ public class UI {
 		
 	}
 	
+	public static void printMatch(ChessMatch chessMatch) {
+		printBoard(chessMatch.getPieces());
+		System.out.println();
+		System.out.println("Turn : " + chessMatch.getTurn());
+		System.out.println("Waiting player: " + chessMatch.getCurrentPlayer());
+	}
+	
+	
 	
 	public static void printBoard(ChessPiece[][] pieces) {
+		
+		// Imprime o tabuleiro de xadrez com as peças representadas em `pieces`.
+		
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
 			for (int j = 0; j < pieces.length; j++) {
@@ -62,7 +78,13 @@ public class UI {
 		System.out.println("  a b c d e f g h");
 	}
 	
+	
 	public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves ) {
+		
+		// Imprime o tabuleiro de xadrez, exibindo peças e casas com movimentos possíveis.
+		// pieces = Matriz de peças que representa o estado do tabuleiro.
+		// possibleMoves = Matriz de booleanos que destaca casas com movimentos possíveis. 
+			
 		for (int i = 0; i < pieces.length; i++) {
 			System.out.print((8 - i) + " ");
 			for (int j = 0; j < pieces.length; j++) {
@@ -74,7 +96,13 @@ public class UI {
 	}
 
 	private static void printPiece(ChessPiece piece, boolean background) {
-    	if (background) {
+    	
+		 // Imprime uma peça de xadrez na posição do tabuleiro.
+		 // Se o parâmetro "background" for verdadeiro, a peça terá um fundo azul para destaque.
+		 // Para peças vazias (peça == null), imprime um hífen.
+		 // Para peças não nulas, imprime a peça com as cores apropriadas (branca ou preta). 
+		
+		if (background) {
     		System.out.print(ANSI_BLUE_BACKGROUND);
     	}
 		if (piece == null) {

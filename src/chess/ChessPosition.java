@@ -23,12 +23,13 @@ public class ChessPosition {
 		return row;
 	}
 	
-	protected Position toPosition() {
-		return new Position (8 - row, column - 'a');
+	protected Position toPosition() {							// Converte a posição de xadrez (coluna e linha) em uma posição interna (linha e coluna da matriz).
+		return new Position (8 - row, column - 'a');			// Isso é útil para mapear as coordenadas do tabuleiro de xadrez para a matriz do jogo.	
 	}
 	
-	protected static ChessPosition fromPosition (Position position) {
-		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());
+
+	protected static ChessPosition fromPosition (Position position) {								// Converte uma posição interna (linha e coluna da matriz) em uma posição de xadrez (coluna e linha).
+		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());		// Essa conversão é útil para exibir posições de forma legível no formato de xadrez.			
 	}
 	
 	@Override

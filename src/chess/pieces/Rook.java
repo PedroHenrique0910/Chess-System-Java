@@ -16,6 +16,9 @@ public class Rook extends ChessPiece {
 		return "R";
 	}
 
+	
+	// Calcula as jogadas possíveis para a Torre (Rook) em todas as direções (acima, abaixo, esquerda e direita).
+	// O método utiliza um objeto Position (p) para rastrear as posições em cada direção e uma matriz booleana (mat) para marcar as jogadas válidas.
 	@Override
 	public boolean[][] possibleMoves() {
 		boolean[][] mat = new boolean [getBoard().getRows()][getBoard().getColumns()];
@@ -62,7 +65,6 @@ public class Rook extends ChessPiece {
 			mat[p.getRow()][p.getColumn()] = true;
 		}
 					
-		
 		
 		return mat;
 	}

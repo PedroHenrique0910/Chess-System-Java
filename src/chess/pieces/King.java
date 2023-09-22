@@ -16,10 +16,13 @@ public class King extends ChessPiece {
 		return "K";
 	}
 
-	private boolean canMove(Position position) {
-		ChessPiece p = (ChessPiece)getBoard().piece(position);
-		return p == null || p.getColor() != getColor();
-	}
+	private boolean canMove(Position position) {							// Verifica se é possível mover o rei para a posição especificada.
+		ChessPiece p = (ChessPiece)getBoard().piece(position);				// A variável 'p' recebe o rei na posição 'position' convertido para ChessPiece.
+		return p == null || p.getColor() != getColor();						// Retorna verdadeiro se a posição estiver vazia ('p == null') ou se contiver uma peça adversária ('p.getColor() != getColor()'), 
+	}																	
+		
+		
+	
 	
 	@Override
 	public boolean[][] possibleMoves() {
