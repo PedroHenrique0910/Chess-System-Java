@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import boardgame.Board;
 import boardgame.Piece;
 import boardgame.Position;
@@ -11,6 +14,10 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
+	
+	private List<Piece> piecesOnTheBoard = new ArrayList<>();
+	private List<Piece> capturedPieces = new ArrayList<>();
+
 	
 	public ChessMatch() {                    //Construtor da classe ChessMatch. Inicializa uma nova partida de xadrez com um tabuleiro de 8x8 casas e configura as peças no início da partida
 	board = new Board (8, 8);
@@ -51,7 +58,12 @@ public class ChessMatch {
 		validadeTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target); 
 		nextTurn();
-		return (ChessPiece)capturedPiece;
+		
+		if(capturedPiece != null ) {
+			piecesOnTheBoard.remove(capturedPiece);
+			capturedPieces.add(capturedPiece);
+		}
+			return (ChessPiece)capturedPiece;
 	}
 	
 	private Piece makeMove (Position source, Position target) {															
@@ -87,7 +99,8 @@ public class ChessMatch {
 	
 	
 	private void placeNewPiece(char column, int row, ChessPiece piece) {					
-		board.placePiece(piece, new ChessPosition(column, row).toPosition());			// Adiciona uma nova peça de xadrez ao tabuleiro na posição especificada por coluna e linha.
+		board.placePiece(piece, new ChessPosition(column, row).toPosition());
+		piecesOnTheBoard.add(piece);													// Adiciona uma nova peça de xadrez ao tabuleiro na posição especificada por coluna e linha.
 	}																					// Isso é feito convertendo a posição no formato de xadrez para a representação interna do tabuleiro (Position)
 																						// e usando o método placePiece() do objeto board para colocar a peça na posição desejada.
 	
