@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import boardgame.Board;
 import boardgame.Piece;
@@ -14,6 +15,7 @@ public class ChessMatch {
 	private int turn;
 	private Color currentPlayer;
 	private Board board;
+	private boolean check;
 	
 	private List<Piece> piecesOnTheBoard = new ArrayList<>();
 	private List<Piece> capturedPieces = new ArrayList<>();
@@ -32,6 +34,10 @@ public class ChessMatch {
 	
 	public Color getCurrentPlayer() {
 		return currentPlayer;
+	}
+	
+	public boolean getCheck() {
+		return check;
 	}
 	
 	
@@ -57,21 +63,41 @@ public class ChessMatch {
 		validadeSourcePosition(source);																		// captura qualquer peça adversária na posição de destino e retorna a peça capturada (ou null se não houver captura).
 		validadeTargetPosition(source, target);
 		Piece capturedPiece = makeMove(source, target); 
-		nextTurn();
 		
-		if(capturedPiece != null ) {
-			piecesOnTheBoard.remove(capturedPiece);
-			capturedPieces.add(capturedPiece);
+		if (testCheck(currentPlayer)) {
+			undoMove(source, target, capturedPiece);
+			throw new ChessException("You can't put yourself in check");
 		}
-			return (ChessPiece)capturedPiece;
+		
+		check = (testCheck(opponent(currentPlayer))) ? true : false;
+		
+		nextTurn();
+		return (ChessPiece)capturedPiece;
 	}
 	
 	private Piece makeMove (Position source, Position target) {															
 		Piece p = board.removePiece(source);																			// Este método executa uma jogada de xadrez no tabuleiro, movendo uma peça da posição de origem para a posição de destino.
 		Piece capturedPiece = board.removePiece(target);																// Ele remove a peça da posição de origem, verifica se há uma peça na posição de destino (realizando uma possível captura),
 		board.placePiece(p, target);																					// e coloca a peça na posição de destino.
-		return capturedPiece;																							// O método retorna a peça capturada (ou null, se não houve captura).
-	}												
+		if (capturedPiece != null) {                                                                                    // O método retorna a peça capturada (ou null, se não houve captura).
+			piecesOnTheBoard.remove(capturedPiece);
+			capturedPieces.add(capturedPiece);
+		}
+		return capturedPiece;																							
+	}					
+	
+	private void undoMove(Position source, Position target, Piece capturedPiece) {
+		Piece p = board.removePiece(target);
+		board.placePiece(p, source);
+		if (capturedPiece != null ) {
+			board.placePiece(capturedPiece, target);
+			capturedPieces.remove(capturedPiece);
+			piecesOnTheBoard.add(capturedPiece);
+		}
+		
+	}
+	
+	
 						
 	private void validadeSourcePosition(Position position) {								// Valida a posição de origem de um movimento de xadrez, garantindo que haja uma peça na posição especificada
 		if (!board.thereIsAPiece(position)) {												// e que essa peça tenha movimentos possíveis disponíveis. Caso contrário, lança exceções apropriadas.
@@ -95,6 +121,32 @@ public class ChessMatch {
 		turn++;
 		currentPlayer = (currentPlayer == Color.WHITE) ? Color.BLACK : Color.WHITE;
 	}
+	
+	private Color opponent(Color color) {
+		return (color == Color.WHITE) ? Color.BLACK : Color.WHITE;
+	}
+	
+	private ChessPiece king(Color color) {
+		List<Piece> list = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == color).collect(Collectors.toList());
+		for (Piece p : list) {
+			if (p instanceof King) {
+				return (ChessPiece) p;
+			}
+		}
+		throw new IllegalStateException("There is no " + color + "king on the board");
+	}
+	private boolean testCheck(Color color) {
+		Position kingPosition = king(color).getChessPosition().toPosition();
+		List<Piece> opponentPieces = piecesOnTheBoard.stream().filter(x -> ((ChessPiece)x).getColor() == opponent(color)).collect(Collectors.toList());
+		for (Piece p : opponentPieces) {
+			boolean[][] mat = p.possibleMoves();
+			if (mat[kingPosition.getRow()][kingPosition.getColumn()]) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	
 	
 	

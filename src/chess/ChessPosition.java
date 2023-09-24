@@ -29,7 +29,7 @@ public class ChessPosition {
 	
 
 	protected static ChessPosition fromPosition (Position position) {								// Converte uma posição interna (linha e coluna da matriz) em uma posição de xadrez (coluna e linha).
-		return new ChessPosition((char)('a' - position.getColumn()), 8 - position.getRow());		// Essa conversão é útil para exibir posições de forma legível no formato de xadrez.			
+		return new ChessPosition((char)('a' + position.getColumn()), 8 - position.getRow());		// Essa conversão é útil para exibir posições de forma legível no formato de xadrez.			
 	}
 	
 	@Override
