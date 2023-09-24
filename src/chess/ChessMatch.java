@@ -86,7 +86,8 @@ public class ChessMatch {
 	}
 	
 	private Piece makeMove (Position source, Position target) {															
-		Piece p = board.removePiece(source);																			// Este método executa uma jogada de xadrez no tabuleiro, movendo uma peça da posição de origem para a posição de destino.
+		ChessPiece p =(ChessPiece) board.removePiece(source);	
+		p.increaseMoveCount();																												// Este método executa uma jogada de xadrez no tabuleiro, movendo uma peça da posição de origem para a posição de destino.
 		Piece capturedPiece = board.removePiece(target);																// Ele remove a peça da posição de origem, verifica se há uma peça na posição de destino (realizando uma possível captura),
 		board.placePiece(p, target);																					// e coloca a peça na posição de destino.
 		if (capturedPiece != null) {                                                                                    // O método retorna a peça capturada (ou null, se não houve captura).
@@ -97,7 +98,8 @@ public class ChessMatch {
 	}					
 	
 	private void undoMove(Position source, Position target, Piece capturedPiece) {
-		Piece p = board.removePiece(target);
+		ChessPiece p = (ChessPiece) board.removePiece(target);
+		p.decreaseMoveCount();
 		board.placePiece(p, source);
 		if (capturedPiece != null ) {
 			board.placePiece(capturedPiece, target);
